@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
 
     # My Created Applications
     'account.apps.AccountConfig',
@@ -53,10 +54,12 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
 
     'account.middleware.AccountCheckMiddleWare',
 ]
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 
 ROOT_URLCONF = 'e_voting.urls'
 
@@ -79,6 +82,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'e_voting.wsgi.application'
 
+CORS_ALLOW_ALL_ORIGINS = True
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
