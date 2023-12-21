@@ -111,5 +111,6 @@ dmypy.json
 *.pyc
 media/
 ss/
+static/
 # static/
 # README.md
