@@ -1,0 +1,80 @@
+<!-- Replace the entire content of your template with the following -->
+
+{% extends 'root.html' %}
+{% block content %}
+<section class="content">
+  <h1 class="page-header text-center title"><b>{{ TITLE }}</b></h1>
+  <div class="row">
+    <div class="col-sm-10 col-sm-offset-1">
+      <div class="alert alert-danger alert-dismissible" id="alert" style="display:none;">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        <span class="message"></span>
+      </div>
+
+      <!-- Voting Ballot -->
+      <form method="POST" id="ballotForm" action="{% url 'verify_card_uid' %}">
+        {% csrf_token %}
+        <div class="row">
+          <div class="col-xs-12">
+            <div class="box box-solid" id="">
+              <div class="box-header with-border">
+                <h3 class="box-title"><b>Please, you'd need to verify ownership of this account.</b><hr></h3>
+              </div>
+              <div class="box-body">
+                <div id="candidate_list">
+                  <p>
+                    <span class="pull-right">
+                      <button type="button" id="autoFillButton" class="btn btn-success btn-sm btn-flat"><i class="fa fa-key"></i> Auto Fill Card UID</button>
+                    </span>
+                  </p>
+                </div>
+                <ul>
+                  <p> Kindly Swipe your card over the Card reader then Click on the button <strong>"Auto fill Card UID"</strong></p>
+                </ul>
+                <hr />
+                <div class="form-group has-feedback">
+                  <input type="text" class="form-control" id="cardUidField" name="card_uid" placeholder="Card UID" required>
+                  <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                </div>
+                <button type="submit" class="btn btn-primary btn-flat" name="verify"><i class="fa fa-check-square-o"></i> Verify Card UID</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock content %}
+
+{% block custom_js %}
+<script>
+  $("#autoFillButton").click(function() {
+    $.ajax({
+      url: "{% url 'get_latest_rfid_data' %}",
+      type: 'GET',
+
+      success: function(response) {
+        console.log(response);  // Check the entire response in the console
+        try {
+          if (response && response.success && response.rfid_data) {
+            console.log(response.rfid_data);
+            // Auto-fill the Card UID field with the RFID data
+            $("#cardUidField").val(response.rfid_data);
+            toastr.success("Card UID auto-filled successfully", "Auto Fill");
+          } else {
+            throw new Error("Invalid response format or missing required properties");
+          }
+        } catch (error) {
+          console.error(error);
+          toastr.error(error.message, "Error");
+        }
+      },
+      error: function(response) {
+        console.error(response);  // Log the entire response in the console
+        toastr.error("Please try again later", "Error");
+      },
+    });
+  });
+</script>
+{% endblock custom_js %}
